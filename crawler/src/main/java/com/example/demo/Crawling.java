@@ -1,7 +1,8 @@
 package com.example.demo;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,41 +11,55 @@ import org.jsoup.select.Elements;
 
 public class Crawling {
 
-	Document doc;
-	final int COUNT_INDEX = 0;
-	ArrayList<String> last = new ArrayList<String>();
+	private final int MAX_DEPTH = 2;		//A maximum depth will be 5
+	private HashMap<String, String> links;			//There is no need an order(So using HashSet instead of ArrayList)
 	
-	public void getURL(String URL, int index) {
-		if(index == COUNT_INDEX) return;
-		else {
+	
+
+	public Crawling() {
+		links = new HashMap<String, String>();
+	}
+
+	private String preProcessing(String URL, String pURL) {
+		
+		Pattern pattern = Pattern.compile("^(?:https?:\\/\\/)?(?:www\\.)?[a-zA-Z0-9./]+$");
+		Matcher matcher;
+		
+		if(links.containsValue(URL)) URL = "";
+		if(URL.contains("www")) URL = URL.replace("www.", "");
+		
+		return URL;
+	}
+
+	public void getURL(String URL, String pURL, int depth) {
+		
+		URL = preProcessing(URL, pURL);
+
+		if(depth < MAX_DEPTH && URL != "" && !links.containsValue(URL)) {
 			try {
-				ArrayList<String> URLs = new ArrayList<String>();
-				doc = Jsoup.connect(URL).get();
-				String title = doc.title();
-				System.out.println(title);
+				Document document = Jsoup.connect(URL).get();
+				Elements UrlsOnPage = document.select("a[href]");
 				
+				depth++;
 				
-				Elements links = doc.select("a");
-				for(Element e : links) {
-					String link = e.attr("href");
-					if(link.isEmpty() == false && link.equals("#") == false && link.contains("paddywagontours") == false
-							&& link.startsWith("http")) {
-						if(URLs.contains(link) == false) {
-							if(link.startsWith("https")) {
-								link = link.replaceFirst("[https]*", "http");
-							}
-							URLs.add(link);
-						}
-					}
+				links.put(URL, pURL);
+				System.out.println(URL);
+				for(Element url : UrlsOnPage) {
+					getURL(url.attr("href"), URL, depth);
 				}
 				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
+				
+			}catch (Exception e) {
+				// TODO: handle exception
 			}
-			
 		}
+			
 		
+	}
+	
+	public HashMap getURLs() {
+		return links;
 	}
 
 }
