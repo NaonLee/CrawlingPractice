@@ -2,23 +2,30 @@ package com.example.demo.board.domain;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class BoardVO {
-	private String id;
+	private int id;
 	private String URL;
-	private String parentId;
-	private Date registeredDate;
+	private String pId;
+	private int depth;
+	private Date regi_date;
 	
-	public BoardVO(String id, String URL, String parentId, Date registeredDate) {
+	public BoardVO() {}
+	
+	public BoardVO(int id, String uRL, String pId, int depth, Date regi_date) {
+		super();
 		this.id = id;
-		this.URL = URL;
-		this.parentId = parentId;
-		this.registeredDate = registeredDate;
+		URL = uRL;
+		this.pId = pId;
+		this.depth = depth;
+		this.regi_date = regi_date;
 	}
-	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getURL() {
@@ -27,18 +34,25 @@ public class BoardVO {
 	public void setURL(String uRL) {
 		URL = uRL;
 	}
-	public String getParentId() {
-		return parentId;
+	public String getpId() {
+		return pId;
 	}
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
+	public void setpId(String pId) {
+		this.pId = pId;
 	}
-	public Date getRegisteredDate() {
-		return registeredDate;
+	public int getDepth() {
+		return depth;
 	}
-	public void setRegisteredDate(Date registeredDate) {
-		this.registeredDate = registeredDate;
+	public void setDepth(int depth) {
+		this.depth = depth;
 	}
+	public Date getRegi_date() {
+		return regi_date;
+	}
+	public void setRegi_date(Date regi_date) {
+		this.regi_date = regi_date;
+	}
+	
 	
 	
 }

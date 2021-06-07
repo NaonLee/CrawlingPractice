@@ -1,6 +1,7 @@
 package com.example.demo;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,11 +15,12 @@ public class CrawlerApplication {
 		SpringApplication.run(CrawlerApplication.class, args);
 		String URL = "http://www.paddywagontours.com";
 		Crawling cr = new Crawling();
-		cr.getURL(URL, URL, 0);
 		
-		HashMap<String,String> test = cr.getURLs();
+		List<String> URLs = new ArrayList<String>();
 		
-		System.out.println(test.keySet()); 
+		URLs.addAll(cr.getURL(URL, null));
+		
+		System.out.println(URLs.toString());
 	}
 
 }

@@ -1,6 +1,9 @@
 package com.example.demo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,43 +14,45 @@ import org.jsoup.select.Elements;
 
 public class Crawling {
 
-	private final int MAX_DEPTH = 2;		//A maximum depth will be 5
-	private HashMap<String, String> links;			//There is no need an order(So using HashSet instead of ArrayList)
-	
 	
 
-	public Crawling() {
-		links = new HashMap<String, String>();
-	}
-
+	
 	private String preProcessing(String URL, String pURL) {
 		
 		Pattern pattern = Pattern.compile("^(?:https?:\\/\\/)?(?:www\\.)?[a-zA-Z0-9./]+$");
 		Matcher matcher;
 		
-		if(links.containsValue(URL)) URL = "";
-		if(URL.contains("www")) URL = URL.replace("www.", "");
+		if(URL.startsWith("#") || URL.contains("javascript".toLowerCase())) {
+			URL = null;
+		} else {
+			matcher = pattern.matcher(URL);
+			if(!matcher.find()) {
+				if(URL.startsWith("/") || URL.startsWith("?")) {
+					URL = pURL + URL;
+				}
+				
+			}
+		}
 		
 		return URL;
 	}
 
-	public void getURL(String URL, String pURL, int depth) {
-		
+	public List<String> getURL(String URL, String pURL) {
+		ArrayList<String> URLs = new ArrayList<String>();
+		int count = 0;
 		URL = preProcessing(URL, pURL);
 
-		if(depth < MAX_DEPTH && URL != "" && !links.containsValue(URL)) {
+		if(URL != null) {
 			try {
 				Document document = Jsoup.connect(URL).get();
 				Elements UrlsOnPage = document.select("a[href]");
 				
-				depth++;
+				Iterator<Element> itr = UrlsOnPage.iterator();
 				
-				links.put(URL, pURL);
-				System.out.println(URL);
-				for(Element url : UrlsOnPage) {
-					getURL(url.attr("href"), URL, depth);
+				while(itr.hasNext() && count < 10) {
+					URLs.add(URL);
+					count++;
 				}
-				
 				
 				
 			}catch (Exception e) {
@@ -55,11 +60,10 @@ public class Crawling {
 			}
 		}
 			
+		return URLs;
 		
 	}
 	
-	public HashMap getURLs() {
-		return links;
-	}
+
 
 }
