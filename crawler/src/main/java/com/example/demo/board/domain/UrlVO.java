@@ -5,16 +5,16 @@ import java.util.Date;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BoardVO {
+public class UrlVO {
 	private int id;
 	private String URL;
 	private String pId;
 	private int depth;
 	private Date regi_date;
 	
-	public BoardVO() {}
+	public UrlVO() {}
 	
-	public BoardVO(int id, String uRL, String pId, int depth, Date regi_date) {
+	public UrlVO(int id, String uRL, String pId, int depth, Date regi_date) {
 		super();
 		this.id = id;
 		URL = uRL;
